@@ -7,6 +7,9 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\TariffController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,6 +39,15 @@ Route::middleware(['auth', 'permission:manage members'])->group(function () {
 
 Route::middleware(['auth', 'permission:manage tariffs'])->group(function () {
     Route::resource('tariffs', TariffController::class);
+});
+
+Route::middleware(['auth', 'role:super-admin|pusat'])->group(function () {
+    Route::resource('users', UserController::class);
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('invoices', InvoiceController::class);
+    Route::resource('payments', PaymentController::class);
 });
 
 require __DIR__.'/auth.php';
