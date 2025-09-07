@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
+use App\Models\Invoice;
+use Illuminate\Http\Request;
+use Midtrans\Notification;
+use Midtrans\Config;
 
 class PaymentController extends Controller
 {
@@ -27,9 +31,53 @@ class PaymentController extends Controller
 
     public function show(Payment $payment)
     {
-        $this->authorize('view', $payment); // pakai policy
+        if (auth()->user()->hasRole('member') && $payment->invoice->member_id !== auth()->user()->member->id) {
+            abort(403);
+        }
+        if (auth()->user()->hasRole('cabang') && $payment->invoice->branch_id !== auth()->user()->branch_id) {
+            abort(403);
+        }
+
         return view('payments.show', compact('payment'));
     }
+
+    // Endpoint callback dari Midtrans
+    public function notificationHandler(Request $request)
+    {
+        Config::$serverKey = config('services.midtrans.serverKey');
+        Config::$isProduction = config('services.midtrans.isProduction');
+
+        $notif = new Notification();
+
+        $invoice = Invoice::where('code', $notif->order_id)->first();
+
+        if (!$invoice) {
+            return response()->json(['message' => 'Invoice not found'], 404);
+        }
+
+        // simpan payment record
+        $payment = Payment::updateOrCreate(
+            ['provider_order_id' => $notif->order_id],
+            [
+                'invoice_id' => $invoice->id,
+                'provider'   => 'midtrans',
+                'amount_cents' => $notif->gross_amount * 100,
+                'status' => $notif->transaction_status,
+                'paid_at' => $notif->transaction_status === 'settlement' ? now() : null,
+                'raw_response' => json_encode($notif),
+            ]
+        );
+
+        // update invoice status
+        if ($notif->transaction_status === 'settlement') {
+            $invoice->update([
+                'status' => 'paid',
+                'paid_at' => now(),
+            ]);
+        } elseif ($notif->transaction_status === 'expired') {
+            $invoice->update(['status' => 'expired']);
+        }
+
+        return response()->json(['message' => 'OK']);
+    }
 }
-
-

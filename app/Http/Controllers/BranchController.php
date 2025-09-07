@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Exports\BranchesExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class BranchController extends Controller
 {
@@ -64,5 +68,17 @@ class BranchController extends Controller
         $branch->delete();
 
         return redirect()->route('branches.index')->with('success', 'Cabang berhasil dihapus.');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new BranchesExport, 'cabang.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $branches = \App\Models\Branch::all();
+        $pdf = Pdf::loadView('exports.branches-pdf', compact('branches'));
+        return $pdf->download('cabang.pdf');
     }
 }

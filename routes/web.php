@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -47,7 +47,15 @@ Route::middleware(['auth', 'role:super-admin|pusat'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('invoices', InvoiceController::class);
-    Route::resource('payments', PaymentController::class);
+    Route::get('invoices/{invoice}/pay', [InvoiceController::class, 'pay'])->name('invoices.pay');
+
+    Route::resource('payments', PaymentController::class)->only(['index','show']);
 });
+
+// Callback Midtrans (POST)
+Route::post('midtrans/notification', [PaymentController::class, 'notificationHandler']);
+
+Route::get('branches/export/excel', [BranchController::class, 'exportExcel'])->name('branches.export.excel');
+Route::get('branches/export/pdf', [BranchController::class, 'exportPdf'])->name('branches.export.pdf');
 
 require __DIR__.'/auth.php';
