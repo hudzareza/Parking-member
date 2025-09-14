@@ -7,6 +7,9 @@ use App\Models\Branch;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Exports\MemberExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MemberController extends Controller
 {
@@ -99,5 +102,17 @@ class MemberController extends Controller
         $member->delete();
 
         return redirect()->route('members.index')->with('success', 'Member berhasil dihapus.');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new MemberExport, 'members.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $members = Member::with(['user','branch','vehicles'])->get();
+        $pdf = Pdf::loadView('exports.members-pdf', compact('members'));
+        return $pdf->download('members.pdf');
     }
 }

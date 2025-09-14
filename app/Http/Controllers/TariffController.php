@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Tariff;
 use App\Models\Branch;
 use Illuminate\Http\Request;
+use App\Exports\TariffExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TariffController extends Controller
 {
@@ -71,5 +74,17 @@ class TariffController extends Controller
         $tariff->delete();
 
         return redirect()->route('tariffs.index')->with('success', 'Tarif berhasil dihapus.');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new TariffExport, 'tariffs.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $tariffs = Tariff::with('branch')->orderBy('effective_start', 'desc')->get();
+        $pdf = Pdf::loadView('exports.tariffs-pdf', compact('tariffs'));
+        return $pdf->download('tariffs.pdf');
     }
 }

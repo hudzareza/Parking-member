@@ -40,5 +40,33 @@
             </table>
         </div>
     </div>
+    <div class="card shadow-lg mt-4" style="font-size: 1rem;">
+        <div class="row mb-2 mt-4">
+            <div class="col-md-2">
+                <div class="p-3 text-center">
+                    <h6 class="text-muted mb-1">Total Data Tarif</h6>
+                    <h4 class="fw-bold">{{ $tariffs->count() }}</h4>
+                </div>
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 text-center">
+                    <a href="{{ route('tariffs.export.pdf') }}" class="btn btn-danger btn-sm">
+                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-3">
+                <div class="p-3 text-center">
+                    <a href="{{ route('tariffs.export.excel') }}" class="btn btn-success btn-sm">
+                        <i class="bi bi-file-earmark-excel"></i> Export Excel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

@@ -73,13 +73,16 @@
           data-accordion="false"
           id="navigation"
         >
-          {{-- Dashboard: semua role --}}
-          <li class="nav-item">
-              <a href="{{ route('dashboard') }}" class="nav-link">
-                  <i class="nav-icon bi bi-speedometer"></i>
-                  <p>Dashboard</p>
-              </a>
-          </li>
+          {{-- Dashboard: hanya Super Admin & Pusat --}}
+            @role('super-admin|pusat')
+            <li class="nav-item">
+                <a href="{{ route('dashboard') }}" class="nav-link">
+                    <i class="nav-icon bi bi-speedometer"></i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+            @endrole
+
 
           {{-- User Management: hanya Super Admin --}}
           @role('super-admin')
@@ -140,6 +143,17 @@
               </a>
           </li>
           @endrole
+          <hr>
+          <hr>
+          {{-- Laporan Kendaraan per Cabang: hanya Super Admin & Pusat --}}
+            @role('super-admin|pusat')
+            <li class="nav-item">
+                <a href="{{ route('vehicles.listPerBranch') }}" class="nav-link">
+                    <i class="nav-icon bi bi-truck"></i>
+                    <p>Laporan Kendaraan</p>
+                </a>
+            </li>
+            @endrole
         </ul>
         <!--end::Sidebar Menu-->
       </nav>

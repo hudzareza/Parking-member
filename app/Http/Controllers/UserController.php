@@ -7,6 +7,9 @@ use App\Models\Branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use App\Exports\UserExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -81,5 +84,17 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success','User deleted.');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new UserExport, 'user_list.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $users = User::with('branch')->get(); // ambil dengan relasi cabang
+        $pdf = Pdf::loadView('exports.users-pdf', compact('users'));
+        return $pdf->download('user_list.pdf');
     }
 }

@@ -52,10 +52,26 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('payments', PaymentController::class)->only(['index','show']);
 });
 
+Route::middleware(['auth', 'role:super-admin|pusat'])->group(function () {
+    Route::get('vehicles/list-per-branch', [VehicleController::class, 'listPerBranch'])->name('vehicles.listPerBranch');
+    Route::get('vehicles/export/excel', [VehicleController::class, 'exportExcel'])->name('vehicles.export.excel');
+    Route::get('vehicles/export/pdf', [VehicleController::class, 'exportPdf'])->name('vehicles.export.pdf');
+});
+
+
 // Callback Midtrans (POST)
 Route::post('midtrans/notification', [PaymentController::class, 'notificationHandler']);
 
 Route::get('branches/export/excel', [BranchController::class, 'exportExcel'])->name('branches.export.excel');
 Route::get('branches/export/pdf', [BranchController::class, 'exportPdf'])->name('branches.export.pdf');
+
+Route::get('users/export/excel', [UserController::class, 'exportExcel'])->name('users.export.excel');
+Route::get('users/export/pdf', [UserController::class, 'exportPdf'])->name('users.export.pdf');
+
+Route::get('members/export/excel', [MemberController::class, 'exportExcel'])->name('members.export.excel');
+Route::get('members/export/pdf', [MemberController::class, 'exportPdf'])->name('members.export.pdf');
+
+Route::get('tariffs/export/excel', [TariffController::class, 'exportExcel'])->name('tariffs.export.excel');
+Route::get('tariffs/export/pdf', [TariffController::class, 'exportPdf'])->name('tariffs.export.pdf');
 
 require __DIR__.'/auth.php';
