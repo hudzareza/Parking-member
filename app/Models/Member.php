@@ -15,11 +15,21 @@ class Member extends Model
         'phone',
         'id_card_number',
         'joined_at',
+        'portal_token',
     ];
 
     protected $casts = [
         'joined_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($member) {
+            if (empty($member->portal_token)) {
+                $member->portal_token = \Illuminate\Support\Str::uuid()->toString();
+            }
+        });
+    }
 
     public function user() {
         return $this->belongsTo(User::class);

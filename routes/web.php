@@ -74,4 +74,13 @@ Route::get('members/export/pdf', [MemberController::class, 'exportPdf'])->name('
 Route::get('tariffs/export/excel', [TariffController::class, 'exportExcel'])->name('tariffs.export.excel');
 Route::get('tariffs/export/pdf', [TariffController::class, 'exportPdf'])->name('tariffs.export.pdf');
 
+// Pendaftaran Member (self service, tanpa login)
+Route::get('self-service/register', [\App\Http\Controllers\SelfServiceController::class, 'showForm'])->name('portal.form');
+Route::post('self-service/register', [\App\Http\Controllers\SelfServiceController::class, 'submit'])->name('portal.register.process');
+Route::post('self-service/perpanjang', [\App\Http\Controllers\SelfServiceController::class, 'processRenew'])->name('portal.renew.process');
+
+// Portal Member (akses via token unik, tanpa login)
+Route::get('portal/{token}', [\App\Http\Controllers\PortalMemberController::class, 'show'])->name('portal.member');
+
+
 require __DIR__.'/auth.php';

@@ -19,4 +19,9 @@ class Vehicle extends Model
     public function member() {
         return $this->belongsTo(Member::class);
     }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }
