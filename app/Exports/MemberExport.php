@@ -31,6 +31,6 @@ class MemberExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['Nama', 'Email', 'Telepon', 'No KTP', 'Cabang', 'Tanggal Bergabung', 'Kendaraan'];
+        return ['Nama', 'Email', 'Telepon', 'No KTP', 'Lokasi', 'Tanggal Bergabung', 'Kendaraan'];
     }
 }

@@ -18,7 +18,7 @@
                 <th>Email</th>
                 <th>No HP</th>
                 <th>No KTP</th>
-                <th>Cabang</th>
+                <th>Lokasi</th>
                 <th>Tanggal Bergabung</th>
                 <th>Kendaraan</th>
             </tr>

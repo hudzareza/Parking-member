@@ -13,7 +13,7 @@
             <table id="users-table" class="table table-bordered datatable">
                 <thead>
                     <tr>
-                        <th>Cabang</th>
+                        <th>Lokasi</th>
                         <th>Jenis Kendaraan</th>
                         <th>Tarif</th>
                         <th>Berlaku Mulai</th>

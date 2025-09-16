@@ -36,10 +36,10 @@
 
         {{-- Branch --}}
         <div class="mb-4">
-            <label for="branch_id" class="block text-gray-700 text-sm font-bold mb-2">Cabang <span class="text-red-500">*</span></label>
+            <label for="branch_id" class="block text-gray-700 text-sm font-bold mb-2">Lokasi <span class="text-red-500">*</span></label>
             <select name="branch_id" id="branch_id" required
                     class="form-control">
-                <option value="">-- Pilih Cabang --</option>
+                <option value="">-- Pilih Lokasi --</option>
                 @foreach($branches as $branch)
                     <option value="{{ $branch->id }}" {{ old('branch_id', $member->branch_id) == $branch->id ? 'selected' : '' }}>
                         {{ $branch->name }}

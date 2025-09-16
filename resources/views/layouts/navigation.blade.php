@@ -104,7 +104,7 @@
           </li>
           @endrole
 
-          {{-- Member: Super Admin, Pusat, Cabang --}}
+          {{-- Member: Super Admin, Pusat, Lokasi --}}
           @role('super-admin|pusat|cabang')
           <li class="nav-item">
               <a href="{{ route('members.index') }}" class="nav-link">
@@ -114,7 +114,7 @@
           </li>
           @endrole
 
-          {{-- Tarif: Super Admin & Pusat full akses, Cabang hanya view --}}
+          {{-- Tarif: Super Admin & Pusat full akses, Lokasi hanya view --}}
           @role('super-admin|pusat|cabang')
           <li class="nav-item">
               <a href="{{ route('tariffs.index') }}" class="nav-link">
@@ -145,7 +145,7 @@
           @endrole
           <hr>
           <hr>
-          {{-- Laporan Kendaraan per Cabang: hanya Super Admin & Pusat --}}
+          {{-- Laporan Kendaraan per Lokasi: hanya Super Admin & Pusat --}}
             @role('super-admin|pusat')
             <li class="nav-item">
                 <a href="{{ route('vehicles.listPerBranch') }}" class="nav-link">

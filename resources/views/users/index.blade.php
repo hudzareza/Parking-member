@@ -16,7 +16,7 @@
                     <tr>
                         <th>Nama</th>
                         <th>Email</th>
-                        <th>Cabang</th>
+                        <th>Lokasi</th>
                         <th>Peran/Role</th>
                         <th class="text-center" style="width: 150px;">Aksi</th>
                     </tr>

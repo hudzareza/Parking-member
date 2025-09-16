@@ -28,7 +28,7 @@ class Tariff extends Model
     }
 
     /**
-     * Ambil tarif aktif sesuai cabang, jenis kendaraan, dan tanggal.
+     * Ambil tarif aktif sesuai lokasi, jenis kendaraan, dan tanggal.
      */
     public function scopeActiveFor($query, $branchId, $vehicleType, $date = null)
     {
@@ -47,7 +47,7 @@ class Tariff extends Model
                 $q->whereNull('effective_end')
                   ->orWhere('effective_end', '>=', $date);
             })
-            ->orderByRaw("CASE WHEN branch_id IS NULL THEN 0 ELSE 1 END DESC") // prioritaskan cabang
+            ->orderByRaw("CASE WHEN branch_id IS NULL THEN 0 ELSE 1 END DESC") // prioritaskan lokasi
             ->orderBy('effective_start', 'desc');
     }
 }

@@ -21,10 +21,10 @@
 
         {{-- Branch --}}
         <div class="mb-4">
-            <label for="branch_id" class="block text-gray-700 text-sm font-bold mb-2">Cabang</label>
+            <label for="branch_id" class="block text-gray-700 text-sm font-bold mb-2">Lokasi</label>
             <select name="branch_id" id="branch_id"
                     class="form-control">
-                <option value="">-- Semua Cabang --</option>
+                <option value="">-- Semua Lokasi --</option>
                 @foreach($branches as $id => $name)
                     <option value="{{ $id }}" {{ old('branch_id') == $id ? 'selected' : '' }}>
                         {{ $name }}

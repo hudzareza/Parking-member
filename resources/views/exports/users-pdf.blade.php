@@ -14,7 +14,7 @@
             <tr>
                 <th>Nama</th>
                 <th>Email</th>
-                <th>Cabang</th>
+                <th>Lokasi</th>
             </tr>
         </thead>
         <tbody>

@@ -54,7 +54,7 @@ class TariffController extends Controller
 
         // Jika role = cabang, cek apakah tarif miliknya
         if ($user->hasRole('cabang') && $tariff->branch_id !== $user->branch_id) {
-            abort(403, 'Anda tidak boleh mengedit tarif cabang lain.');
+            abort(403, 'Anda tidak boleh mengedit tarif lokasi lain.');
         }
 
         $request->validate([

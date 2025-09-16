@@ -15,7 +15,7 @@
                     <tr>
                         <th>Nama</th>
                         <th>Email</th>
-                        <th>Cabang</th>
+                        <th>Lokasi</th>
                         <th>Telepon</th>
                         <th>Aksi</th>
                     </tr>

@@ -15,6 +15,6 @@ class BranchesExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['Nama Cabang', 'Alamat'];
+        return ['Nama', 'Alamat'];
     }
 }

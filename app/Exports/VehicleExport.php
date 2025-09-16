@@ -30,13 +30,13 @@ class VehicleExport implements FromCollection, WithHeadings
                 'plat_nomor' => $v->plate_number,
                 'jenis'      => ucfirst($v->vehicle_type),
                 'member'     => optional($v->member->user)->name,
-                'cabang'     => optional($v->member->branch)->name,
+                'lokasi'     => optional($v->member->branch)->name,
             ];
         });
     }
 
     public function headings(): array
     {
-        return ['Plat Nomor', 'Jenis Kendaraan', 'Member', 'Cabang'];
+        return ['Plat Nomor', 'Jenis Kendaraan', 'Member', 'Lokasi'];
     }
 }

@@ -3,10 +3,10 @@
 @section('content')
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h3 mb-0">Daftar Cabang</h1>
+        <h1 class="h3 mb-0">Daftar Lokasi</h1>
         @can('manage branches')
             <a href="{{ route('branches.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i>Tambah Cabang
+                <i class="bi bi-plus-circle"></i>Tambah Lokasi
             </a>
         @endcan
     </div>
@@ -33,7 +33,7 @@
                                     <form action="{{ route('branches.destroy', $branch) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus cabang ini?')">
+                                        <button class="btn btn-danger btn-sm" onclick="return confirm('Yakin hapus Lokasi ini?')">
                                             <i class="bi bi-trash"></i>Hapus
                                         </button>
                                     </form>
@@ -49,7 +49,7 @@
         <div class="row mb-2 mt-4">
             <div class="col-md-2">
                 <div class="p-3 text-center">
-                    <h6 class="text-muted mb-1">Total Cabang</h6>
+                    <h6 class="text-muted mb-1">Total Lokasi</h6>
                     <h4 class="fw-bold">{{ $branches->count() }}</h4>
                 </div>
             </div>

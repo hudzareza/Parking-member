@@ -31,7 +31,7 @@ class DashboardController extends Controller
             $membersGrowth->push($count);
         }
 
-        // ==== Statistik pendapatan per cabang ====
+        // ==== Statistik pendapatan per lokasi ====
         $revenueStats = Branch::withSum(['payments as revenue' => function ($q) {
             $q->whereNotNull('paid_at'); // hanya yang sudah dibayar
         }], 'gross_amount_cents')->get();

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Edit Cabang</h1>
+    <h1>Edit Lokasi</h1>
 
     {{-- Tampilkan error validation --}}
     @if ($errors->any())
@@ -22,7 +22,7 @@
 
         {{-- Name --}}
         <div class="mb-4">
-            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nama Cabang <span class="text-red-500">*</span></label>
+            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nama Lokasi <span class="text-red-500">*</span></label>
             <input type="text" name="name" id="name" value="{{ old('name', $branch->name) }}" required
                    class="form-control">
         </div>

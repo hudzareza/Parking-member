@@ -20,7 +20,7 @@
                     <div class="card mb-4">
                         <div class="card-header border-0">
                             <div class="d-flex justify-content-between">
-                                <h3 class="card-title">Statistik Member per Cabang</h3>
+                                <h3 class="card-title">Statistik Member per Lokasi</h3>
                                 <a href="{{ route('members.index') }}" 
                                 class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                                 View Members
@@ -97,7 +97,7 @@
                     <div class="card mb-4">
                         <div class="card-header border-0">
                             <div class="d-flex justify-content-between">
-                                <h3 class="card-title">Statistik Pendapatan per Cabang</h3>
+                                <h3 class="card-title">Statistik Pendapatan per Lokasi</h3>
                                 <a href="{{ route('payments.index') }}" 
                                 class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                                 View Payments
@@ -140,7 +140,7 @@
                     <div class="card mb-4">
                         <div class="card-header border-0">
                             <div class="d-flex justify-content-between">
-                                <h3 class="card-title">Statistik Pendapatan per Cabang</h3>
+                                <h3 class="card-title">Statistik Pendapatan per Lokasi</h3>
                                 <a href="{{ route('payments.index') }}" 
                                 class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                                 View Payments
@@ -265,7 +265,7 @@
     });
     </script>
     <script>
-        // Chart Pendapatan per Cabang
+        // Chart Pendapatan per Lokasi
         const ctxRevenue = document.getElementById('revenue-chart').getContext('2d');
         new Chart(ctxRevenue, {
             type: 'bar',

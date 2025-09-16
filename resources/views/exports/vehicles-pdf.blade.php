@@ -17,7 +17,7 @@
                 <th>Plat Nomor</th>
                 <th>Jenis Kendaraan</th>
                 <th>Member</th>
-                <th>Cabang</th>
+                <th>Lokasi</th>
             </tr>
         </thead>
         <tbody>

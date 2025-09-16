@@ -14,7 +14,7 @@
     <table>
         <thead>
             <tr>
-                <th>Cabang</th>
+                <th>Lokasi</th>
                 <th>Jenis Kendaraan</th>
                 <th>Tarif (Rp)</th>
                 <th>Berlaku Mulai</th>

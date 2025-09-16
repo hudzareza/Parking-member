@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-md-4">
                 <select name="branch_id" class="form-select" onchange="this.form.submit()">
-                    <option value="">-- Semua Cabang --</option>
+                    <option value="">-- Semua Lokasi --</option>
                     @foreach($branches as $branch)
                         <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
                             {{ $branch->name }}
@@ -27,7 +27,7 @@
                         <th>Plat Nomor</th>
                         <th>Jenis Kendaraan</th>
                         <th>Member</th>
-                        <th>Cabang</th>
+                        <th>Lokasi</th>
                     </tr>
                 </thead>
                 <tbody>

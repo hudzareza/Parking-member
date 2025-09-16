@@ -8,7 +8,7 @@
     </style>
 </head>
 <body>
-    <h2>Daftar Cabang</h2>
+    <h2>Daftar Lokasi</h2>
     <table>
         <thead>
             <tr>

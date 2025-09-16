@@ -25,6 +25,6 @@ class TariffExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['Cabang', 'Jenis Kendaraan', 'Tarif (Rp)', 'Berlaku Mulai'];
+        return ['Lokasi', 'Jenis Kendaraan', 'Tarif (Rp)', 'Berlaku Mulai'];
     }
 }

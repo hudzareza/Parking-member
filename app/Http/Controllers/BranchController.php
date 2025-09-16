@@ -42,7 +42,7 @@ class BranchController extends Controller
             'code' => 'CBG-' . strtoupper(Str::random(5)), 
         ]);
 
-        return redirect()->route('branches.index')->with('success', 'Cabang berhasil ditambahkan.');
+        return redirect()->route('branches.index')->with('success', 'Lokasi berhasil ditambahkan.');
     }
 
     public function edit(Branch $branch)
@@ -60,25 +60,25 @@ class BranchController extends Controller
 
         $branch->update($request->only(['name', 'address', 'code']));
 
-        return redirect()->route('branches.index')->with('success', 'Cabang berhasil diperbarui.');
+        return redirect()->route('branches.index')->with('success', 'Lokasi berhasil diperbarui.');
     }
 
     public function destroy(Branch $branch)
     {
         $branch->delete();
 
-        return redirect()->route('branches.index')->with('success', 'Cabang berhasil dihapus.');
+        return redirect()->route('branches.index')->with('success', 'Lokasi berhasil dihapus.');
     }
 
     public function exportExcel()
     {
-        return Excel::download(new BranchesExport, 'cabang.xlsx');
+        return Excel::download(new BranchesExport, 'lokasi.xlsx');
     }
 
     public function exportPdf()
     {
         $branches = \App\Models\Branch::all();
         $pdf = Pdf::loadView('exports.branches-pdf', compact('branches'));
-        return $pdf->download('cabang.pdf');
+        return $pdf->download('lokasi.pdf');
     }
 }

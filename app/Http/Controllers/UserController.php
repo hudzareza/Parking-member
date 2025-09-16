@@ -93,7 +93,7 @@ class UserController extends Controller
 
     public function exportPdf()
     {
-        $users = User::with('branch')->get(); // ambil dengan relasi cabang
+        $users = User::with('branch')->get(); // ambil dengan relasi lokasi
         $pdf = Pdf::loadView('exports.users-pdf', compact('users'));
         return $pdf->download('user_list.pdf');
     }
