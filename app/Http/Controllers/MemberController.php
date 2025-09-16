@@ -98,11 +98,27 @@ class MemberController extends Controller
 
     public function destroy(Member $member)
     {
-        $member->user->delete(); // otomatis delete member karena relasi
+        // Cek apakah member punya invoice
+        if ($member->invoices()->count() > 0) {
+            $member->invoices()->delete();
+        }
+
+        // Hapus kendaraan terkait
+        if ($member->vehicles()->count() > 0) {
+            $member->vehicles()->delete();
+        }
+
+        // Hapus member
         $member->delete();
 
-        return redirect()->route('members.index')->with('success', 'Member berhasil dihapus.');
+        // Hapus user terkait
+        if ($member->user) {
+            $member->user->delete();
+        }
+
+        return redirect()->route('members.index')->with('success', 'Member beserta data terkait berhasil dihapus.');
     }
+
 
     public function exportExcel()
     {

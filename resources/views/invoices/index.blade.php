@@ -17,7 +17,7 @@
                     @foreach($invoices as $inv)
                         <tr>
                             <td>{{ $inv->code }}</td>
-                            <td>{{ $inv->member->name }}</td>
+                            <td>{{ $inv->member->user->name }}</td>
                             <td>{{ $inv->period->format('M Y') }}</td>
                             <td>Rp {{ number_format($inv->amount_cents/100,0,',','.') }}</td>
                             <td>{{ ucfirst($inv->status) }}</td>

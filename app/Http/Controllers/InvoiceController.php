@@ -12,7 +12,7 @@ class InvoiceController extends Controller
 {
     public function index()
     {
-        $query = Invoice::with('member','branch');
+        $query = Invoice::with('member.user','branch');
 
         // filter berdasarkan role
         if (auth()->user()->hasRole('member')) {
@@ -22,7 +22,7 @@ class InvoiceController extends Controller
         }
 
         $invoices = $query->get();
-
+        
         return view('invoices.index', compact('invoices'));
     }
 

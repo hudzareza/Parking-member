@@ -82,7 +82,17 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        if ($user->member) {
+            // Hapus invoice dulu
+            $user->member->invoices()->delete();
+
+            // Hapus member (cascade delete akan otomatis)
+            $user->member->delete();
+        }
+
+        // Hapus user
         $user->delete();
+
         return redirect()->route('users.index')->with('success','User deleted.');
     }
 
