@@ -15,7 +15,7 @@ class MemberController extends Controller
 {
     public function index()
     {
-        $members = Member::with(['user', 'branch'])->paginate(10);
+        $members = Member::with(['user', 'branch'])->get();
         return view('members.index', compact('members'));
     }
 

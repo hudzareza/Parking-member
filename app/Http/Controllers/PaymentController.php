@@ -24,7 +24,7 @@ class PaymentController extends Controller
             );
         }
 
-        $payments = $query->paginate(10);
+        $payments = $query->get();
 
         return view('payments.index', compact('payments'));
     }

@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <h2>Masuk ke LOTUS Parking</h2>
+    <h2><span style="color: #FFD700;-webkit-text-stroke: 0.5px #000;">LOTUS</span> Parking Admin</h2>
 
     <!-- Session Status -->
     <x-auth-session-status class="mb-4 text-sm text-green-600" :status="session('status')" />
@@ -33,12 +33,12 @@
             <button type="submit" class="login-button">Login</button>
         </div>
 
-        <div class="link">
+        <!-- <div class="link">
             @if (Route::has('password.request'))
                 <a href="{{ route('password.request') }}">
                     Lupa password?
                 </a>
             @endif
-        </div>
+        </div> -->
     </form>
 </x-guest-layout>

@@ -14,7 +14,7 @@ class VehicleController extends Controller
 {
     public function index(Member $member)
     {
-        $vehicles = $member->vehicles()->paginate(10);
+        $vehicles = $member->vehicles()->get();
         return view('vehicles.index', compact('member', 'vehicles'));
     }
 
@@ -83,7 +83,7 @@ class VehicleController extends Controller
             });
         }
 
-        $vehicles = $query->paginate(10);
+        $vehicles = $query->get();
 
         return view('vehicles.list-per-branch', compact('vehicles', 'branches'));
     }

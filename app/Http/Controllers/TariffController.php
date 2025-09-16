@@ -13,7 +13,7 @@ class TariffController extends Controller
 {
     public function index()
     {
-        $tariffs = Tariff::with('branch')->orderBy('effective_start', 'desc')->paginate(10);
+        $tariffs = Tariff::with('branch')->orderBy('effective_start', 'desc')->get();
         return view('tariffs.index', compact('tariffs'));
     }
 

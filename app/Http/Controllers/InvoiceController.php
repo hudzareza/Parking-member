@@ -21,7 +21,7 @@ class InvoiceController extends Controller
             $query->where('branch_id', auth()->user()->branch_id);
         }
 
-        $invoices = $query->paginate(10);
+        $invoices = $query->get();
 
         return view('invoices.index', compact('invoices'));
     }
