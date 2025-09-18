@@ -30,11 +30,31 @@
                 </tbody>
             </table>
         </div>
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-3 p-3 text-center">
-                    <h6 class="text-muted mb-1">Total Payment</h6>
-                    <h4 class="fw-bold">{{ $payments->count() }}</h4>
+        <div class="card shadow-lg mt-4" style="font-size: 1rem;">
+            <div class="row mb-2 mt-4">
+                <div class="col-md-2">
+                    <div class="p-3 text-center">
+                        <h6 class="text-muted mb-1">Total Data Payment</h6>
+                        <h4 class="fw-bold">{{ $payments->count() }}</h4>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 text-center">
+                        <a href="{{ route('payments.export.pdf') }}" class="btn btn-danger btn-sm">
+                            <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3 text-center">
+                        <a href="{{ route('payments.export.excel') }}" class="btn btn-success btn-sm">
+                            <i class="bi bi-file-earmark-excel"></i> Export Excel
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

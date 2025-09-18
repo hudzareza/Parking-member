@@ -16,7 +16,7 @@
     @endif
 
     {{-- Form edit tarif --}}
-    <form action="{{ route('tariffs.update', $tariff->id) }}" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form action="{{ route('tariffs.update', $tariff->id) }}" method="POST" >
         @csrf
         @method('PUT')
 

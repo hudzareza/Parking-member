@@ -105,6 +105,7 @@
     <h1>Portal Member - {{ $member->user->name }}</h1>
     <p>Lokasi: {{ $member->branch->name }}</p>
     <p>No HP: {{ $member->phone }}</p>
+    <hr>
 
     <h2 class="mt-4">Kendaraan & Tagihan</h2>
 
@@ -123,6 +124,7 @@
                             <th>Jatuh Tempo</th>
                         </tr>
                     </thead>
+                    
                     <tbody>
                         @forelse($vehicle->invoices as $inv)
                             <tr>
@@ -143,6 +145,14 @@
         </div>
     @endforeach
     <hr>
+    <h2>Info Pembayaran</h2>
+    <div class="alert alert-info shadow-sm mt-4">
+        <p>Silakan transfer ke Virtual Account berikut:</p>
+        <h4 class="fw-bold">{{ $virtualAccount }}</h4>
+        <p><small>Pastikan menyertakan bukti pembayaran agar pembayaran dapat diverifikasi admin.</small></p>
+    </div>
+    <hr>
+    <h2 class="mb-4">Upload Bukti</h2>
     @foreach($invoices as $invoice)
         <tr>
             <td>{{ $invoice->code }}</td>
@@ -176,11 +186,8 @@
                 @endif
             </td>
         </tr>
+    <hr>
     @endforeach
-
-
-    <h2>Pembayaran</h2>
-    <p>Silakan transfer ke Virtual Account: <strong>{{ $virtualAccount }}</strong></p>
 </div>
 
 <!-- Scripts -->

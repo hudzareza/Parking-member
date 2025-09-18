@@ -115,7 +115,7 @@
           @endrole
 
           {{-- Tarif: Super Admin & Pusat full akses, Lokasi hanya view --}}
-          @role('super-admin|pusat|cabang')
+          @role('super-admin|pusat')
           <li class="nav-item">
               <a href="{{ route('tariffs.index') }}" class="nav-link">
                   <i class="nav-icon bi bi-cash-coin"></i>
@@ -125,7 +125,7 @@
           @endrole
 
           {{-- Invoice: semua role, member hanya lihat invoice sendiri --}}
-          @role('super-admin|pusat|cabang|member')
+          @role('super-admin|pusat|cabang')
             <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-receipt"></i>
@@ -142,17 +142,22 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="{{ route('admin.invoices.pending') }}" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
-                      <p>Pending</p>
-                    </a>
+                      <a href="{{ route('admin.invoices.pending') }}" class="nav-link">
+                          <i class="nav-icon bi bi-circle"></i>
+                          <p>
+                              Pending
+                              @if($pendingProofCount > 0)
+                                  <span class="badge bg-danger ms-2">{{ $pendingProofCount }}</span>
+                              @endif
+                          </p>
+                      </a>
                   </li>
                 </ul>
             </li>
           @endrole
 
           {{-- Payment: semua role, member hanya lihat payment sendiri --}}
-          @role('super-admin|pusat|cabang|member')
+          @role('super-admin|pusat|cabang')
           <li class="nav-item">
               <a href="{{ route('payments.index') }}" class="nav-link">
                   <i class="nav-icon bi bi-wallet2"></i>

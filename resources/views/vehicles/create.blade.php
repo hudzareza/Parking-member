@@ -16,7 +16,7 @@
     @endif
 
     {{-- Form tambah kendaraan --}}
-    <form action="{{ route('members.vehicles.store', $member) }}" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form action="{{ route('members.vehicles.store', $member) }}" method="POST" >
         @csrf
 
         {{-- Plate Number --}}

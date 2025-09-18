@@ -15,13 +15,33 @@ class MemberController extends Controller
 {
     public function index()
     {
-        $members = Member::with(['user', 'branch'])->get();
+        $query = Member::with(['user', 'branch']);
+
+        // Jika user cabang, filter berdasarkan branch_id
+        if (auth()->user()->hasRole('cabang')) {
+            $query->where('branch_id', auth()->user()->branch_id);
+        }
+
+        // Jika user member, tampilkan hanya data miliknya
+        if (auth()->user()->hasRole('member')) {
+            $query->where('user_id', auth()->id());
+        }
+
+        $members = $query->get();
+
         return view('members.index', compact('members'));
     }
 
     public function create()
     {
-        $branches = Branch::all();
+        $query = Branch::query();
+
+        if (auth()->user()->hasRole('cabang')) {
+            // hanya lihat branch miliknya
+            $query->where('id', auth()->user()->branch_id);
+        }
+
+        $branches = $query->get();
         return view('members.create', compact('branches'));
     }
 
@@ -33,7 +53,6 @@ class MemberController extends Controller
             'password'      => 'required|min:6|confirmed',
             'branch_id'     => 'required|exists:branches,id',
             'phone'         => 'required|string|max:20',
-            'id_card_number'=> 'required|string|max:50|unique:members,id_card_number',
         ]);
 
         // Buat user untuk member
@@ -50,7 +69,7 @@ class MemberController extends Controller
             'user_id'        => $user->id,
             'branch_id'      => $request->branch_id,
             'phone'          => $request->phone,
-            'id_card_number' => $request->id_card_number,
+            'id_card_number' => '-',
             'joined_at'      => now(),
         ]);
 
@@ -65,7 +84,14 @@ class MemberController extends Controller
 
     public function edit(Member $member)
     {
-        $branches = Branch::all();
+        $query = Branch::query();
+
+        if (auth()->user()->hasRole('cabang')) {
+            // hanya lihat branch miliknya
+            $query->where('id', auth()->user()->branch_id);
+        }
+
+        $branches = $query->get();
         return view('members.edit', compact('member', 'branches'));
     }
 
@@ -76,7 +102,6 @@ class MemberController extends Controller
             'email'         => 'required|email|unique:users,email,' . $member->user_id,
             'branch_id'     => 'required|exists:branches,id',
             'phone'         => 'required|string|max:20',
-            'id_card_number'=> 'required|string|max:50|unique:members,id_card_number,' . $member->id,
         ]);
 
         // Update user
@@ -90,7 +115,7 @@ class MemberController extends Controller
         $member->update([
             'branch_id'      => $request->branch_id,
             'phone'          => $request->phone,
-            'id_card_number' => $request->id_card_number,
+            'id_card_number' => "-",
         ]);
 
         return redirect()->route('members.index')->with('success', 'Member berhasil diupdate.');

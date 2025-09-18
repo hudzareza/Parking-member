@@ -20,7 +20,15 @@ class BranchController extends Controller
 
     public function index()
     {
-        $branches = Branch::all();
+        $query = Branch::query();
+
+        if (auth()->user()->hasRole('cabang')) {
+            // hanya lihat branch miliknya
+            $query->where('id', auth()->user()->branch_id);
+        }
+
+        $branches = $query->get();
+
         return view('branches.index', compact('branches'));
     }
 

@@ -7,6 +7,9 @@ use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Midtrans\Notification;
 use Midtrans\Config;
+use App\Exports\PaymentExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PaymentController extends Controller
 {
@@ -97,5 +100,17 @@ class PaymentController extends Controller
         }
 
         return response()->json(['message' => 'OK']);
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new PaymentExport, 'payments.xlsx');
+    }
+
+    public function exportPdf()
+    {
+        $payments = \App\Models\Payment::all();
+        $pdf = Pdf::loadView('exports.payments-pdf', compact('payments'));
+        return $pdf->download('payments.pdf');
     }
 }

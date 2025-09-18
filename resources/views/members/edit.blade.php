@@ -16,7 +16,7 @@
     @endif
 
     {{-- Form edit member --}}
-    <form action="{{ route('members.update', $member->id) }}" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <form action="{{ route('members.update', $member->id) }}" method="POST" >
         @csrf
         @method('PUT')
 
@@ -52,13 +52,6 @@
         <div class="mb-4">
             <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Telepon <span class="text-red-500">*</span></label>
             <input type="text" name="phone" id="phone" value="{{ old('phone', $member->phone) }}" required
-                   class="form-control">
-        </div>
-
-        {{-- ID Card Number --}}
-        <div class="mb-4">
-            <label for="id_card_number" class="block text-gray-700 text-sm font-bold mb-2">Nomor KTP <span class="text-red-500">*</span></label>
-            <input type="text" name="id_card_number" id="id_card_number" value="{{ old('id_card_number', $member->id_card_number) }}" required
                    class="form-control">
         </div>
 

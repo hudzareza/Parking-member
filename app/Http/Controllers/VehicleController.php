@@ -73,14 +73,20 @@ class VehicleController extends Controller
 
     public function listPerBranch(Request $request)
     {
-        $branches = \App\Models\Branch::all();
+        $user = auth()->user();
 
-        $query = \App\Models\Vehicle::with(['member.branch', 'member.user']);
+        // Jika cabang → hanya bisa lihat cabangnya sendiri
+        if ($user->hasRole('cabang')) {
+            $branches = \App\Models\Branch::where('id', $user->branch_id)->get();
+            $query = \App\Models\Vehicle::with(['member.branch', 'member.user'])
+                ->whereHas('member', fn($q) => $q->where('branch_id', $user->branch_id));
+        } else {
+            $branches = \App\Models\Branch::all();
+            $query = \App\Models\Vehicle::with(['member.branch', 'member.user']);
+        }
 
         if ($request->branch_id) {
-            $query->whereHas('member', function ($q) use ($request) {
-                $q->where('branch_id', $request->branch_id);
-            });
+            $query->whereHas('member', fn($q) => $q->where('branch_id', $request->branch_id));
         }
 
         $vehicles = $query->get();
@@ -90,18 +96,25 @@ class VehicleController extends Controller
 
     public function exportExcel(Request $request)
     {
-        $branchId = $request->branch_id ?? null;
+        $user = auth()->user();
+
+        // Jika cabang → branch_id dipaksa sesuai user
+        $branchId = $user->hasRole('cabang')
+            ? $user->branch_id
+            : ($request->branch_id ?? null);
+
         return Excel::download(new VehicleExport($branchId), 'vehicles.xlsx');
     }
 
     public function exportPdf(Request $request)
     {
+        $user = auth()->user();
         $query = \App\Models\Vehicle::with(['member.branch','member.user']);
 
-        if ($request->branch_id) {
-            $query->whereHas('member', function ($q) use ($request) {
-                $q->where('branch_id', $request->branch_id);
-            });
+        if ($user->hasRole('cabang')) {
+            $query->whereHas('member', fn($q) => $q->where('branch_id', $user->branch_id));
+        } elseif ($request->branch_id) {
+            $query->whereHas('member', fn($q) => $q->where('branch_id', $request->branch_id));
         }
 
         $vehicles = $query->get();
@@ -109,4 +122,5 @@ class VehicleController extends Controller
         $pdf = Pdf::loadView('exports.vehicles-pdf', compact('vehicles'));
         return $pdf->download('vehicles.pdf');
     }
+
 }

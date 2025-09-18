@@ -10,6 +10,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\SelfServiceController;
+use App\Http\Controllers\PortalMemberController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -83,15 +85,18 @@ Route::get('members/export/pdf', [MemberController::class, 'exportPdf'])->name('
 Route::get('tariffs/export/excel', [TariffController::class, 'exportExcel'])->name('tariffs.export.excel');
 Route::get('tariffs/export/pdf', [TariffController::class, 'exportPdf'])->name('tariffs.export.pdf');
 
+Route::get('payments/export/excel', [PaymentController::class, 'exportExcel'])->name('payments.export.excel');
+Route::get('payments/export/pdf', [PaymentController::class, 'exportPdf'])->name('payments.export.pdf');
+
 // Pendaftaran Member (self service, tanpa login)
-Route::get('self-service/register', [\App\Http\Controllers\SelfServiceController::class, 'showForm'])->name('portal.form');
-Route::post('self-service/register', [\App\Http\Controllers\SelfServiceController::class, 'submit'])->name('portal.register.process');
-Route::post('self-service/perpanjang', [\App\Http\Controllers\SelfServiceController::class, 'processRenew'])->name('portal.renew.process');
+Route::get('self-service/register', [SelfServiceController::class, 'showForm'])->name('portal.form');
+Route::post('self-service/register', [SelfServiceController::class, 'submit'])->name('portal.register.process');
+Route::post('self-service/perpanjang', [SelfServiceController::class, 'processRenew'])->name('portal.renew.process');
 
 // Portal Member (akses via token unik, tanpa login)
-Route::get('portal/{token}', [\App\Http\Controllers\PortalMemberController::class, 'show'])->name('portal.member');
+Route::get('portal/{token}', [PortalMemberController::class, 'show'])->name('portal.member');
 
-Route::post('portal/invoices/{invoice}/proof', [\App\Http\Controllers\PortalMemberController::class, 'uploadProof'])
+Route::post('portal/invoices/{invoice}/proof', [PortalMemberController::class, 'uploadProof'])
     ->name('portal.invoices.uploadProof');
 
 

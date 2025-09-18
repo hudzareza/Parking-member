@@ -2,8 +2,10 @@
 
 @section('content')
 <div class="container">
-    <h3>Pending Proofs</h3>
-    <table class="table">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Daftar Bukti</h1>
+    </div>
+    <table  id="users-table" class="table table-bordered datatable">
         <thead>
             <tr>
                 <th>Invoice</th><th>Member</th><th>Amount</th><th>Bukti</th><th>Action</th>

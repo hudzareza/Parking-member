@@ -3,7 +3,7 @@
 @section('content')
 <div class="container py-4">
     <h1 class="h3 mb-4">Daftar Kendaraan</h1>
-
+    <p style="font-weight: bolder;">*note: Di bawah ini adalah data semua kendaraan yang terdaftar sebagai member disemua cabang dan bisa difilter percabang</p>
     <form method="GET" action="{{ route('vehicles.listPerBranch') }}" class="mb-3">
         <div class="row">
             <div class="col-md-4">

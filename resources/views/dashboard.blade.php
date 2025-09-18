@@ -10,6 +10,28 @@
     </div>
     
     @section('content')
+    <div 
+        id="welcome-alert" 
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                bg-blue-100 text-blue-800 px-6 py-4 rounded-lg shadow-lg flex items-center space-x-3 z-50 transition-opacity duration-1000 opacity-100"
+    >
+        <span class="inline-block bg-blue-500 text-white rounded-full px-3 py-1 text-sm font-semibold">
+            Admin
+        </span>
+        <span>
+            Selamat Datang <strong>{{ auth()->user()->name }}</strong>!
+        </span>
+    </div>
+
+    <script>
+        // fade-out setelah 5 detik
+        setTimeout(() => {
+            const alert = document.getElementById('welcome-alert');
+            alert.classList.add('opacity-0');
+            setTimeout(() => alert.remove(), 1000); // hilang setelah transisi
+        }, 5000);
+    </script>
+    @role('super-admin|pusat')
     <div class="app-content">
           <!--begin::Container-->
           <div class="container-fluid">
@@ -182,6 +204,7 @@
             </div>
         </div>
     </div>
+    @endrole
     <script src="{{ asset('js/chart.js') }}"></script>
     <script>
         const ctx = document.getElementById('members-chart').getContext('2d');
