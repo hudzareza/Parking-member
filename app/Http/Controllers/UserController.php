@@ -36,6 +36,10 @@ class UserController extends Controller
             'role'      => 'required|string|exists:roles,name', // pakai role name
         ]);
 
+        if ($data['role'] === 'cabang' && empty($data['branch_id'])) {
+            return back()->withErrors(['branch_id' => 'Cabang wajib diisi untuk role cabang.']);
+        }
+
         $user = User::create([
             'name'      => $data['name'],
             'email'     => $data['email'],
@@ -64,6 +68,10 @@ class UserController extends Controller
             'branch_id' => 'nullable|exists:branches,id',
             'role'      => 'required|string',
         ]);
+
+        if ($data['role'] === 'cabang' && empty($data['branch_id'])) {
+            return back()->withErrors(['branch_id' => 'Cabang wajib diisi untuk role cabang.']);
+        }
 
         $user->update([
             'name'      => $data['name'],

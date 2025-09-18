@@ -17,8 +17,21 @@
         </div>
 
         <div class="mb-3">
-            <label>Password (leave blank to keep current)</label>
+            <label>Password (biarkan kosong jika tetap ingin pakai password yang sekarang)</label>
             <input type="password" name="password" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label>Lokasi</label>
+            <select name="branch_id" class="form-control">
+                <option value="">-- Pilih Lokasi --</option>
+                @foreach ($branches as $branch)
+                    <option value="{{ $branch->id }}"
+                        @if($user->branch_id == $branch->id) selected @endif>
+                        {{ $branch->name }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         <div class="mb-3">

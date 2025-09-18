@@ -27,6 +27,16 @@
         </div>
 
         <div class="mb-3">
+            <label>Lokasi</label>
+            <select name="branch_id" class="form-control">
+                <option value="">-- Pilih Lokasi --</option>
+                @foreach ($branches as $branch)
+                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label>Role</label>
             <select name="role" class="form-control" required>
                 @foreach ($roles as $name => $label)

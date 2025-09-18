@@ -9,7 +9,7 @@
         <h2 class="text-xl font-semibold mb-4">Informasi Pribadi</h2>
         <p><strong>Nama:</strong> {{ $member->user->name }}</p>
         <p><strong>Email:</strong> {{ $member->user->email }}</p>
-        <p><strong>Cabang:</strong> {{ $member->branch->name }}</p>
+        <p><strong>Lokasi:</strong> {{ $member->branch->name }}</p>
         <p><strong>Telepon:</strong> {{ $member->phone }}</p>
         <p><strong>Nomor KTP:</strong> {{ $member->id_card_number }}</p>
         <p><strong>Tanggal Bergabung:</strong> {{ $member->joined_at->format('Y-m-d') }}</p>
