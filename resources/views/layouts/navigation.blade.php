@@ -49,7 +49,7 @@
       <div class="brand-link">
         <!--begin::Brand Image-->
         <img
-          src="{{ asset('img/abid.png') }}"
+          src="{{ asset('img/logo.png') }}"
           alt="AdminLTE Logo"
           class="brand-image opacity-75 shadow"
         />
@@ -126,12 +126,29 @@
 
           {{-- Invoice: semua role, member hanya lihat invoice sendiri --}}
           @role('super-admin|pusat|cabang|member')
-          <li class="nav-item">
-              <a href="{{ route('invoices.index') }}" class="nav-link">
+            <li class="nav-item">
+                <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-receipt"></i>
-                  <p>Invoice</p>
-              </a>
-          </li>
+                  <p>
+                    Invoice
+                    <i class="nav-arrow bi bi-chevron-right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview" role="navigation" aria-label="Navigation 5" style="box-sizing: border-box; display: block;">
+                  <li class="nav-item">
+                    <a href="{{ route('invoices.index') }}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>List</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{ route('admin.invoices.pending') }}" class="nav-link">
+                      <i class="nav-icon bi bi-circle"></i>
+                      <p>Pending</p>
+                    </a>
+                  </li>
+                </ul>
+            </li>
           @endrole
 
           {{-- Payment: semua role, member hanya lihat payment sendiri --}}

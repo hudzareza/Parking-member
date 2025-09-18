@@ -12,14 +12,14 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        $query = Payment::with('invoice.member');
+        $query = Payment::with('invoices.member');
 
         if (auth()->user()->hasRole('member')) {
-            $query->whereHas('invoice', fn($q) =>
+            $query->whereHas('invoices', fn($q) =>
                 $q->where('member_id', auth()->user()->member->id)
             );
         } elseif (auth()->user()->hasRole('cabang')) {
-            $query->whereHas('invoice', fn($q) =>
+            $query->whereHas('invoices', fn($q) =>
                 $q->where('branch_id', auth()->user()->branch_id)
             );
         }
@@ -31,10 +31,16 @@ class PaymentController extends Controller
 
     public function show(Payment $payment)
     {
-        if (auth()->user()->hasRole('member') && $payment->invoice->member_id !== auth()->user()->member->id) {
+        $invoice = $payment->invoices->first();
+
+        if (!$invoice) {
+            abort(404, 'Invoice tidak ditemukan untuk payment ini.');
+        }
+
+        if (auth()->user()->hasRole('member') && $invoice->member_id !== auth()->user()->member->id) {
             abort(403);
         }
-        if (auth()->user()->hasRole('cabang') && $payment->invoice->branch_id !== auth()->user()->branch_id) {
+        if (auth()->user()->hasRole('cabang') && $invoice->branch_id !== auth()->user()->branch_id) {
             abort(403);
         }
 
@@ -57,15 +63,27 @@ class PaymentController extends Controller
 
         // simpan payment record
         $payment = Payment::updateOrCreate(
-            ['provider_order_id' => $notif->order_id],
+            ['midtrans_order_id' => $notif->order_id], // pakai kolom di model Payment
             [
-                'invoice_id' => $invoice->id,
-                'provider'   => 'midtrans',
-                'amount_cents' => $notif->gross_amount * 100,
+                'code' => 'MT-' . strtoupper(uniqid()),
+                'member_id' => $invoice->member_id,
+                'branch_id' => $invoice->branch_id,
+                'gross_amount_cents' => $notif->gross_amount * 100,
                 'status' => $notif->transaction_status,
+                'midtrans_order_id' => $notif->order_id,
+                'midtrans_transaction_id' => $notif->transaction_id ?? null,
+                'payment_type' => $notif->payment_type ?? 'midtrans',
+                'fraud_status' => $notif->fraud_status ?? null,
                 'paid_at' => $notif->transaction_status === 'settlement' ? now() : null,
-                'raw_response' => json_encode($notif),
+                'raw_request' => null,
+                'raw_notification' => json_encode($notif),
             ]
+        );
+
+        // pastikan ada relasi payment_items
+        $payment->items()->updateOrCreate(
+            ['invoice_id' => $invoice->id],
+            ['amount_cents' => $invoice->amount_cents]
         );
 
         // update invoice status

@@ -16,8 +16,12 @@
                 <tbody>
                     @foreach($payments as $pay)
                         <tr>
-                            <td>{{ $pay->invoice->code }}</td>
-                            <td>Rp {{ number_format($pay->amount_cents/100,0,',','.') }}</td>
+                            <td>
+                                @foreach($pay->invoices as $inv)
+                                    <div>{{ $inv->code }}</div>
+                                @endforeach
+                            </td>
+                            <td>Rp {{ number_format($pay->gross_amount_cents/100,0,',','.') }}</td>
                             <td>{{ ucfirst($pay->status) }}</td>
                             <td>{{ $pay->paid_at?->format('d M Y H:i') }}</td>
                             <td><a href="{{ route('payments.show',$pay) }}" class="btn btn-sm btn-primary">Detail</a></td>

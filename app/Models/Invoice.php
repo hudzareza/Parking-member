@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
-    protected $fillable = [
+      protected $fillable = [
         'code',
         'member_id',
         'branch_id',
@@ -16,13 +16,22 @@ class Invoice extends Model
         'status',
         'due_date',
         'paid_at',
+        'proof_file',
+        'proof_status',
+        'verification_note',
+        'verified_by',
+        'proof_uploaded_at',
+        'verified_at',
     ];
 
     protected $casts = [
-        'period'   => 'date',     
-        'due_date' => 'date',     
-        'paid_at'  => 'datetime', 
+        'period'   => 'date',
+        'due_date' => 'date',
+        'paid_at'  => 'datetime',
+        'proof_uploaded_at' => 'datetime',
+        'verified_at'       => 'datetime',
     ];
+
 
     public function vehicle() {
         return $this->belongsTo(Vehicle::class);

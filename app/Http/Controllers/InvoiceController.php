@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\Member;
+use App\Models\Payment;
+use App\Models\PaymentItem;
+use App\Models\PaymentLog;
 use Illuminate\Http\Request;
 use Midtrans\Snap;
 use Midtrans\Config;
+use Illuminate\Support\Str;
 
 class InvoiceController extends Controller
 {
@@ -22,7 +26,7 @@ class InvoiceController extends Controller
         }
 
         $invoices = $query->get();
-        
+
         return view('invoices.index', compact('invoices'));
     }
 
@@ -65,5 +69,82 @@ class InvoiceController extends Controller
         $snapToken = Snap::getSnapToken($params);
 
         return view('invoices.pay', compact('invoice','snapToken'));
+    }
+
+    public function pendingProofs()
+    {
+        $invoices = Invoice::where('proof_status', 'pending')->with('member')->get();
+        return view('invoices.pending', compact('invoices'));
+    }
+
+    public function verifyProof(Request $request, Invoice $invoice)
+    {
+        // $this->authorize('verify-invoice'); // sesuaikan otorisasi
+
+        if ($invoice->status === 'paid') {
+            return back()->with('warning', 'Invoice sudah berstatus paid.');
+        }
+
+        // Buat record Payment offline (recommended) agar audit trail rapi
+        $payment = Payment::create([
+            'code' => 'OFF-' . Str::upper(Str::random(8)),
+            'member_id' => $invoice->member_id,
+            'branch_id' => $invoice->branch_id,
+            'gross_amount_cents' => $invoice->amount_cents,
+            'status' => 'settlement',
+            'midtrans_order_id' => null,
+            'midtrans_transaction_id' => null,
+            'payment_type' => 'bank_transfer_offline',
+            'fraud_status' => null,
+            'paid_at' => now(),
+            'raw_request' => null,
+            'raw_notification' => null,
+        ]);
+
+        PaymentItem::create([
+            'payment_id' => $payment->id,
+            'invoice_id' => $invoice->id,
+            'amount_cents' => $invoice->amount_cents,
+        ]);
+
+        // update invoice
+        $invoice->update([
+            'status' => 'paid',
+            'paid_at' => now(),
+            'proof_status' => 'accepted',
+            'verified_by' => auth()->id(),
+            'verification_note' => $request->input('note'),
+            'verified_at' => now(),
+        ]);
+
+        // optional: buat payment log
+        PaymentLog::create([
+            'payment_id' => $payment->id,
+            'event' => 'manual_verify',
+            'message' => 'Admin verified payment manually',
+            'payload' => json_encode([
+                'admin_id' => auth()->id(),
+                'invoice_id' => $invoice->id,
+            ]),
+        ]);
+
+        return back()->with('success', 'Invoice ' . $invoice->code . ' berhasil diverifikasi dan ditandai LUNAS.');
+    }
+
+    public function rejectProof(Request $request, Invoice $invoice)
+    {
+        // $this->authorize('verify-invoice'); // sesuaikan otorisasi
+
+        $request->validate(['note' => 'nullable|string']);
+
+        $invoice->update([
+            'proof_status' => 'rejected',
+            'verification_note' => $request->note,
+            'verified_by' => auth()->id(),
+            'verified_at' => now(),
+        ]);
+
+        // (opsional) jangan hapus file agar audit trail ada, atau hapus jika ingin.
+        return back()->with('success', 'Bukti transfer ditolak. Beri tahu member untuk upload ulang.');
     }
 }

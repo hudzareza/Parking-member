@@ -29,11 +29,7 @@
             </div>
 
             @if($invoice->status === 'unpaid')
-                <form action="{{ route('invoices.pay', $invoice->id) }}" method="GET">
-                    <button type="submit" class="btn btn-success">
-                        Konfirmasi bayar
-                    </button>
-                </form>
+                <p class="text-warning fw-bold mt-3">Invoice belum dibayar/pending silakan ke menu pending untuk di verifikasi.</p>
             @else
                 <p class="text-success fw-bold mt-3">Invoice sudah dibayar.</p>
             @endif

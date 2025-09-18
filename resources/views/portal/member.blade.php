@@ -59,6 +59,37 @@
     </style>
 </head>
 <body>
+<div class="container mt-3">
+
+    {{-- Pesan sukses --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    {{-- Pesan error umum --}}
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    {{-- Pesan error validasi --}}
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+</div>
 
 <div class="container py-4">
 
@@ -110,6 +141,41 @@
                 </table>
             </div>
         </div>
+    @endforeach
+    <hr>
+    @foreach($invoices as $invoice)
+        <tr>
+            <td>{{ $invoice->code }}</td>
+            <td>{{ \Carbon\Carbon::parse($invoice->period)->format('F Y') }}</td>
+            <td>Rp {{ number_format($invoice->amount_cents/100,0,',','.') }}</td>
+            <td>
+                @if($invoice->status === 'paid')
+                    <span class="badge bg-success">Lunas</span>
+                @else
+                    <span class="badge bg-warning text-dark">{{ ucfirst($invoice->status) }}</span>
+                @endif
+            </td>
+            <td>
+                @if($invoice->proof_file)
+                    <a href="{{ asset('storage/'.$invoice->proof_file) }}" target="_blank">Lihat Bukti</a>
+                    <div>Status bukti: <strong>{{ $invoice->proof_status }}</strong></div>
+                @endif
+
+                @if($invoice->status !== 'paid')
+                    <form action="{{ route('portal.invoices.uploadProof', $invoice->id) }}?token={{ $member->portal_token }}"
+                        method="POST" 
+                        enctype="multipart/form-data" 
+                        class="mt-2">
+                        @csrf
+                        <input type="hidden" name="token" value="{{ $member->portal_token }}">
+                        <div class="input-group">
+                            <input type="file" name="proof_file" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.pdf" required>
+                            <button class="btn btn-sm btn-success" type="submit">Upload Bukti</button>
+                        </div>
+                    </form>
+                @endif
+            </td>
+        </tr>
     @endforeach
 
 

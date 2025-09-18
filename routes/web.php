@@ -46,11 +46,20 @@ Route::middleware(['auth', 'role:super-admin|pusat'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('invoices/pending-proofs', [InvoiceController::class, 'pendingProofs'])
+        ->name('admin.invoices.pending');
+
+    Route::get('invoices/{invoice}/pay', [InvoiceController::class, 'pay'])
+        ->name('invoices.pay');
+
     Route::resource('invoices', InvoiceController::class);
-    Route::get('invoices/{invoice}/pay', [InvoiceController::class, 'pay'])->name('invoices.pay');
+
+    Route::post('invoices/{invoice}/verify', [InvoiceController::class, 'verifyProof'])->name('admin.invoices.verify');
+    Route::post('invoices/{invoice}/reject', [InvoiceController::class, 'rejectProof'])->name('admin.invoices.reject');
 
     Route::resource('payments', PaymentController::class)->only(['index','show']);
 });
+
 
 Route::middleware(['auth', 'role:super-admin|pusat'])->group(function () {
     Route::get('vehicles/list-per-branch', [VehicleController::class, 'listPerBranch'])->name('vehicles.listPerBranch');
@@ -81,6 +90,9 @@ Route::post('self-service/perpanjang', [\App\Http\Controllers\SelfServiceControl
 
 // Portal Member (akses via token unik, tanpa login)
 Route::get('portal/{token}', [\App\Http\Controllers\PortalMemberController::class, 'show'])->name('portal.member');
+
+Route::post('portal/invoices/{invoice}/proof', [\App\Http\Controllers\PortalMemberController::class, 'uploadProof'])
+    ->name('portal.invoices.uploadProof');
 
 
 require __DIR__.'/auth.php';

@@ -9,7 +9,6 @@ use App\Models\Tariff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-
 class SelfServiceController extends Controller
 {
     public function showForm()
