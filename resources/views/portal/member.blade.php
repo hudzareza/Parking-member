@@ -56,6 +56,14 @@
             color: #000; /* agar input search/select tetap terbaca */
             background: #fff;
         }
+        .invoice-card {
+            border-left: 5px solid #4e73df;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .invoice-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -92,10 +100,14 @@
 </div>
 
 <div class="container py-4">
-
+    <div class="mb-3">
+        <a href="{{ route('portal.form') }}" class="btn btn-secondary">
+            ⬅️ Kembali 
+        </a>
+    </div>
     <!-- Logo + Brand -->
     <div class="brand">
-        <img src="{{ asset('img/logo.png') }}" alt="Lotus Parking Logo">
+        <img src="{{ asset('img/logo-new.png') }}" alt="Lotus Parking Logo">
         <div class="brand-text">
             <span class="lotus">LOTUS</span> <span class="parking">Parking</span>
         </div>
@@ -110,40 +122,50 @@
     <h2 class="mt-4">Kendaraan & Tagihan</h2>
 
     @foreach($member->vehicles as $vehicle)
-        <div class="card mb-4 p-3 shadow-sm">
-            <h5>{{ ucfirst($vehicle->vehicle_type) }} - {{ $vehicle->plate_number }}</h5>
-
-            <div class="table-responsive">
-                <table class="table table-bordered datatable mb-0">
-                    <thead>
-                        <tr>
-                            <th>Kode</th>
-                            <th>Periode</th>
-                            <th>Jumlah</th>
-                            <th>Status</th>
-                            <th>Jatuh Tempo</th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        @forelse($vehicle->invoices as $inv)
-                            <tr>
-                                <td>{{ $inv->code }}</td>
-                                <td>{{ $inv->period->format('F Y') }}</td>
-                                <td>Rp {{ number_format($inv->amount_cents/100,0,',','.') }}</td>
-                                <td>{{ ucfirst($inv->status) }}</td>
-                                <td>{{ $inv->due_date->format('d-m-Y') }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center">Belum ada invoice untuk kendaraan ini</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-header bg-gradient text-white d-flex justify-content-between align-items-center"
+                style="background: linear-gradient(135deg, #4e73df, #1cc88a);">
+                <h5 class="mb-0">
+                    {{ ucfirst($vehicle->vehicle_type) }} - {{ $vehicle->plate_number }}
+                </h5>
+                <span class="badge bg-light text-dark">Total: {{ $vehicle->invoices->count() }} Invoice</span>
+            </div>
+            <div class="card-body bg-dark text-light">
+                @forelse($vehicle->invoices as $inv)
+                    <div class="invoice-card border rounded p-3 mb-3 bg-light text-dark shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold text-primary mb-0">Invoice {{ $inv->code }}</h6>
+                            <small class="text-muted">{{ $inv->period->format('F Y') }}</small>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Jumlah:</strong> Rp {{ number_format($inv->amount_cents/100,0,',','.') }}</p>
+                                <p class="mb-1"><strong>Status:</strong>
+                                    @if($inv->status === 'paid')
+                                        <span class="badge bg-success">Lunas</span>
+                                    @else
+                                        <span class="badge bg-warning text-dark">{{ ucfirst($inv->status) }}</span>
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <p class="mb-1"><strong>Jatuh Tempo:</strong> {{ $inv->due_date->format('d-m-Y') }}</p>
+                                @if($inv->status === 'paid')
+                                    <a href="{{ route('portal.invoices.download', ['invoice'=>$inv->id, 'token'=>$member->portal_token]) }}" 
+                                    class="btn btn-sm btn-outline-primary mt-2">📥 Download PDF</a>
+                                @else
+                                    <small class="text-muted">Silakan upload bukti di bawah.</small>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-center">Belum ada invoice untuk kendaraan ini</p>
+                @endforelse
             </div>
         </div>
     @endforeach
+
     <hr>
     <h2>Info Pembayaran</h2>
     <div class="alert alert-info shadow-sm mt-4">
@@ -211,6 +233,17 @@ $(document).ready(function() {
     });
 });
 </script>
+<script>
+    // Redirect otomatis jika sudah lebih dari 1 hari sejak member dibuat
+    document.addEventListener("DOMContentLoaded", function() {
+        let createdAt = new Date("{{ $member->created_at }}"); 
+        let now = new Date();
+        let diff = (now - createdAt) / (1000 * 60 * 60 * 24); // selisih dalam hari
 
+        if (diff > 1) {
+            window.location.href = "{{ route('portal.form') }}";
+        }
+    });
+</script>
 </body>
 </html>

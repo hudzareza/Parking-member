@@ -49,7 +49,7 @@
       <div class="brand-link">
         <!--begin::Brand Image-->
         <img
-          src="{{ asset('img/logo.png') }}"
+          src="{{ asset('img/logo-new.png') }}"
           alt="AdminLTE Logo"
           class="brand-image opacity-75 shadow"
         />

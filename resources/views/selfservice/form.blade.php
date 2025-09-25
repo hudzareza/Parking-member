@@ -35,6 +35,13 @@
             border-radius: 12px;
             overflow: hidden;
             margin-bottom: 2rem;
+            display: none; /* sembunyikan default */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .form-card.show {
+            display: block;
+            opacity: 1;
         }
         .form-card-header {
             background: linear-gradient(135deg, #4e73df, #1cc88a);
@@ -82,7 +89,7 @@
         }
         .form-control::placeholder {
             color: #ffffff; /* placeholder putih */
-            opacity: 1; /* pastikan terlihat jelas */
+            opacity: 1;
         }
     </style>
 </head>
@@ -92,22 +99,11 @@
 
     <!-- Logo + Brand -->
     <div class="brand">
-        <img src="{{ asset('img/logo.png') }}" alt="Lotus Parking Logo"> {{-- ganti path sesuai logo Anda --}}
+        <img src="{{ asset('img/logo-new.png') }}" alt="Lotus Parking Logo">
         <div class="brand-text">
             <span class="lotus">LOTUS</span> <span class="parking">Parking</span>
         </div>
     </div>
-
-    {{-- Alert Error --}}
-    @if ($errors->any())
-        <div class="alert alert-danger shadow-sm">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>⚠️ {{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
     <!-- Judul -->
     <div class="text-center mb-5">
@@ -117,13 +113,15 @@
 
     <!-- Pilih Jenis -->
     <div class="mb-4">
-        <label for="mode" class="form-label fw-semibold">Pilih Jenis</label>
         <select id="mode" name="mode" class="form-select" onchange="toggleForm()">
-            <option value="new" {{ old('mode', 'new') === 'new' ? 'selected' : '' }}>🆕 Member Baru</option>
+            <option value="" {{ old('mode') ? '' : 'selected' }}>-- Pilih Jenis --</option>
+            <option value="new" {{ old('mode') === 'new' ? 'selected' : '' }}>🆕 Member Baru</option>
             <option value="renew" {{ old('mode') === 'renew' ? 'selected' : '' }}>🔄 Perpanjang</option>
         </select>
-        <small class="text-light d-block mt-1">
+        <small class="text-light d-block mt-4 mb-2">
             🆕 <strong>Member Baru:</strong> Daftar kendaraan baru dan buat akun member pertama kali.<br>
+        </small>
+        <small class="text-light d-block mt-2 mb-4">
             🔄 <strong>Perpanjang:</strong> Memperpanjang masa aktif member kendaraan yang sudah terdaftar.
         </small>
     </div>
@@ -140,27 +138,17 @@
 
                 <div class="mb-3">
                     <label class="form-label">Nama Lengkap</label>
-                    <input type="text" name="name" class="form-control" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" placeholder="nama@email.com" value="{{ old('email') }}" required>
+                    <input type="text" name="name" class="form-control" placeholder="Masukkan nama lengkap" required autocomplete="off">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Nomor HP</label>
-                    <input type="text" name="phone" class="form-control" placeholder="08xxxxxxxxxx" value="{{ old('phone') }}" required>
+                    <input type="text" name="phone" class="form-control" placeholder="08xxxxxxxxxx" required autocomplete="off">
                 </div>
-                <!-- <div class="mb-3">
-                    <label class="form-label">No KTP</label>
-                    <input type="text" name="id_card_number" class="form-control" placeholder="16 digit KTP" value="{{ old('id_card_number') }}">
-                </div> -->
                 <div class="mb-3">
                     <label class="form-label">Lokasi</label>
                     <select name="branch_id" class="form-select" required>
                         @foreach($branches as $branch)
-                            <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>
-                                {{ $branch->name }}
-                            </option>
+                            <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -174,7 +162,7 @@
                             <option value="mobil">Mobil</option>
                         </select>
                         <label class="mt-2">No Polisi</label>
-                        <input type="text" name="vehicles[0][plate_number]" class="form-control" placeholder="B 1234 CD" required>
+                        <input type="text" name="vehicles[0][plate_number]" class="form-control" placeholder="B 1234 CD" required autocomplete="off">
                     </div>
                 </div>
                 <button type="button" class="btn btn-outline-secondary btn-sm mb-3" onclick="addVehicle()">+ Tambah Kendaraan</button>
@@ -187,7 +175,7 @@
     </div>
 
     {{-- Form Perpanjang --}}
-    <div id="form-renew" class="form-card shadow-sm" style="display:none;">
+    <div id="form-renew" class="form-card shadow-sm">
         <div class="form-card-header">
             <h4 class="mb-0">🔄 Perpanjangan</h4>
         </div>
@@ -197,8 +185,8 @@
                 <input type="hidden" name="mode" value="renew">
 
                 <div class="mb-3">
-                    <label class="form-label">Email atau Nomor HP</label>
-                    <input type="text" name="identifier" class="form-control" placeholder="contoh: user@email.com / 08123xxx" value="{{ old('identifier') }}" required>
+                    <label class="form-label">Nomor HP</label>
+                    <input type="text" name="phone" class="form-control" placeholder="08xxxxxxxxxx" required autocomplete="off">
                 </div>
 
                 <h5 class="mt-4 mb-3">➕ Kendaraan Tambahan (opsional)</h5>
@@ -218,11 +206,20 @@ let vehicleIndex = 1;
 
 function toggleForm() {
     const mode = document.getElementById('mode').value;
-    document.getElementById('form-new').style.display = (mode === 'new') ? 'block' : 'none';
-    document.getElementById('form-renew').style.display = (mode === 'renew') ? 'block' : 'none';
+    const formNew = document.getElementById('form-new');
+    const formRenew = document.getElementById('form-renew');
+
+    // sembunyikan semua form
+    formNew.classList.remove("show");
+    formRenew.classList.remove("show");
+
+    if (mode === 'new') {
+        formNew.classList.add("show");
+    } else if (mode === 'renew') {
+        formRenew.classList.add("show");
+    }
 }
 
-// jalankan saat halaman load, biar sesuai old('mode')
 document.addEventListener('DOMContentLoaded', () => {
     toggleForm();
 });
@@ -239,10 +236,9 @@ function addVehicle(formType = 'new') {
                 <option value="mobil">Mobil</option>
             </select>
             <label class="mt-2">No Polisi</label>
-            <input type="text" name="vehicles[${vehicleIndex}][plate_number]" class="form-control" placeholder="B 1234 CD" required>
+            <input type="text" name="vehicles[${vehicleIndex}][plate_number]" class="form-control" placeholder="B 1234 CD" required autocomplete="off">
         </div>
     `;
-
     wrapper.insertAdjacentHTML('beforeend', html);
     vehicleIndex++;
 }

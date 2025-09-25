@@ -155,7 +155,7 @@
 
         <!-- LOGO / GAMBAR -->
         <div class="logo-wrapper">
-            <img src="{{ asset('img/logo.png') }}" alt="Logo PT. ABID INVESTAMA">
+            <img src="{{ asset('img/logo-new.png') }}" alt="Logo PT. ABID INVESTAMA">
         </div>
     </div>
 
