@@ -13,24 +13,44 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PaymentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $query = Payment::with('invoices.member');
+        $query = Payment::with('invoices.member', 'branch');
 
+        // Filter role
         if (auth()->user()->hasRole('member')) {
-            $query->whereHas('invoices', fn($q) =>
-                $q->where('member_id', auth()->user()->member->id)
-            );
+            $query->where('member_id', auth()->user()->member->id);
         } elseif (auth()->user()->hasRole('cabang')) {
-            $query->whereHas('invoices', fn($q) =>
-                $q->where('branch_id', auth()->user()->branch_id)
-            );
+            $query->where('branch_id', auth()->user()->branch_id);
+        }
+
+        // Filter cabang
+        if ($request->filled('branch_id')) {
+            $query->where('branch_id', $request->branch_id);
+        }
+
+        // Filter bulan & tahun
+        if ($request->filled('month')) {
+            $query->whereMonth('paid_at', $request->month);
+        }
+        if ($request->filled('year')) {
+            $query->whereYear('paid_at', $request->year);
+        }
+
+        // Filter range tanggal
+        if ($request->filled('start_date')) {
+            $query->whereDate('paid_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('paid_at', '<=', $request->end_date);
         }
 
         $payments = $query->get();
+        $branches = \App\Models\Branch::all();
 
-        return view('payments.index', compact('payments'));
+        return view('payments.index', compact('payments', 'branches'));
     }
+
 
     public function show(Payment $payment)
     {
@@ -102,15 +122,33 @@ class PaymentController extends Controller
         return response()->json(['message' => 'OK']);
     }
 
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
-        return Excel::download(new PaymentExport, 'payments.xlsx');
+        $filters = $request->only(['branch_id','month','year','start_date','end_date']);
+        return Excel::download(new PaymentExport($filters), 'payments.xlsx');
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
-        $payments = \App\Models\Payment::all();
-        $pdf = Pdf::loadView('exports.payments-pdf', compact('payments'));
+        $query = Payment::with('invoices', 'member.user', 'branch');
+
+        if ($request->filled('branch_id')) {
+            $query->where('branch_id', $request->branch_id);
+        }
+        if ($request->filled('month')) {
+            $query->whereMonth('paid_at', $request->month);
+        }
+        if ($request->filled('year')) {
+            $query->whereYear('paid_at', $request->year);
+        }
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('paid_at', [$request->start_date, $request->end_date]);
+        }
+
+        $payments = $query->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.payments-pdf', compact('payments'));
         return $pdf->download('payments.pdf');
     }
+
 }

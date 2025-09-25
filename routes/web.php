@@ -88,6 +88,10 @@ Route::get('tariffs/export/pdf', [TariffController::class, 'exportPdf'])->name('
 Route::get('payments/export/excel', [PaymentController::class, 'exportExcel'])->name('payments.export.excel');
 Route::get('payments/export/pdf', [PaymentController::class, 'exportPdf'])->name('payments.export.pdf');
 
+Route::get('invoices/export/excel', [InvoiceController::class, 'exportExcel'])->name('invoices.export.excel');
+Route::get('invoices/export/pdf', [InvoiceController::class, 'exportPdf'])->name('invoices.export.pdf');
+
+
 // Pendaftaran Member (self service, tanpa login)
 Route::get('self-service/register', [SelfServiceController::class, 'showForm'])->name('portal.form');
 Route::post('self-service/register', [SelfServiceController::class, 'submit'])->name('portal.register.process');

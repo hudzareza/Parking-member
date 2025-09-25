@@ -5,32 +5,50 @@ namespace App\Exports;
 use App\Models\Member;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class MemberExport implements FromCollection, WithHeadings
+class MemberExport implements FromCollection, WithHeadings, WithMapping
 {
+    protected $filters;
+
+    public function __construct($filters = [])
+    {
+        $this->filters = $filters;
+    }
+
     public function collection()
     {
-        return Member::with(['user','branch','vehicles'])
-            ->get()
-            ->map(function ($member) {
-                $vehicles = $member->vehicles->map(function ($v) {
-                    return $v->vehicle_type.' - '.$v->plate_number;
-                })->join(', ');
+        $query = Member::with(['user','branch']);
 
-                return [
-                    'name'      => $member->user->name,
-                    'email'     => $member->user->email,
-                    'phone'     => $member->phone,
-                    'id_card'   => $member->id_card_number,
-                    'branch'    => optional($member->branch)->name,
-                    'joined_at' => $member->joined_at->format('Y-m-d'),
-                    'vehicles'  => $vehicles ?: '-',
-                ];
-            });
+        if (!empty($this->filters['branch_id'])) {
+            $query->where('branch_id', $this->filters['branch_id']);
+        }
+        if (!empty($this->filters['month'])) {
+            $query->whereMonth('joined_at', $this->filters['month']);
+        }
+        if (!empty($this->filters['year'])) {
+            $query->whereYear('joined_at', $this->filters['year']);
+        }
+        if (!empty($this->filters['start_date']) && !empty($this->filters['end_date'])) {
+            $query->whereBetween('joined_at', [$this->filters['start_date'], $this->filters['end_date']]);
+        }
+
+        return $query->get();
+    }
+
+    public function map($member): array
+    {
+        return [
+            $member->user->name ?? '-',
+            $member->user->email ?? '-',
+            $member->branch->name ?? '-',
+            $member->phone ?? '-',
+            $member->joined_at?->format('d-m-Y'),
+        ];
     }
 
     public function headings(): array
     {
-        return ['Nama', 'Email', 'Telepon', 'No KTP', 'Lokasi', 'Tanggal Bergabung', 'Kendaraan'];
+        return ['Nama', 'Email', 'Cabang', 'Telepon', 'Tanggal Bergabung'];
     }
 }

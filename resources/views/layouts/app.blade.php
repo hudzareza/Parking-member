@@ -59,7 +59,8 @@
         />
         <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.bootstrap5.min.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.0/css/responsive.bootstrap5.min.css">
-        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     </head>
     <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
         <div class="app-wrapper">
@@ -138,6 +139,9 @@
         <script src="https://cdn.datatables.net/responsive/3.0.0/js/dataTables.responsive.min.js"></script>
         <script src="https://cdn.datatables.net/responsive/3.0.0/js/responsive.bootstrap5.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
         <script>
             $(document).ready(function () {
@@ -154,6 +158,19 @@
                         { orderable: false, targets: 'no-sort' } 
                     ]
                 });
+            });
+        </script>
+        <script>
+            flatpickr("#start_date", {
+                dateFormat: "Y-m-d",
+                allowInput: true,
+                locale: "id" // bahasa Indonesia
+            });
+
+            flatpickr("#end_date", {
+                dateFormat: "Y-m-d",
+                allowInput: true,
+                locale: "id"
             });
         </script>
     </body>
