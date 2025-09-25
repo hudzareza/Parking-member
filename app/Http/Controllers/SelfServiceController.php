@@ -23,9 +23,7 @@ class SelfServiceController extends Controller
             'mode'                   => 'required|in:new,renew',
             'branch_id'              => 'required|exists:branches,id',
             'name'                   => 'required_if:mode,new|string|max:255',
-            'email'                  => 'nullable|email',
             'phone'                  => 'required',
-            // 'id_card_number'         => 'nullable|string',
             'vehicles'               => 'required|array|min:1',
             'vehicles.*.vehicle_type'=> 'required|in:motor,mobil',
             'vehicles.*.plate_number'=> 'required|string',
@@ -35,7 +33,7 @@ class SelfServiceController extends Controller
             // 1. Buat user
             $user = User::create([
                 'name'      => $request->name,
-                'email'     => $request->email ?? Str::random(8).'@example.com',
+                'email'     => $request->name.Str::random(3).'@member.com',
                 'password'  => Hash::make(Str::random(12)),
                 'branch_id' => $request->branch_id,
             ]);
@@ -47,7 +45,6 @@ class SelfServiceController extends Controller
                 'branch_id'      => $request->branch_id,
                 'phone'          => $request->phone,
                 'id_card_number' => '-',
-                // 'id_card_number' => $request->id_card_number,
                 'joined_at'      => now(),
             ]);
 
@@ -118,18 +115,14 @@ class SelfServiceController extends Controller
     public function processRenew(Request $request)
     {
         $request->validate([
-            'identifier'               => 'required|string',
+            'phone'               => 'required|string',
             'vehicles'                 => 'nullable|array',
             'vehicles.*.vehicle_type'  => 'required_with:vehicles|in:motor,mobil',
             'vehicles.*.plate_number'  => 'required_with:vehicles|string',
         ]);
 
         // cari member lewat email atau no hp
-        $member = Member::whereHas('user', function($q) use ($request) {
-                        $q->where('email', $request->identifier);
-                    })
-                    ->orWhere('phone', $request->identifier)
-                    ->first();
+        $member = Member::where('phone', $request->phone)->first();
 
         if (!$member) {
             return back()->with('error', 'Member tidak ditemukan. Silakan daftar baru.');

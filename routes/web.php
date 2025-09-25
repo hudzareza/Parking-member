@@ -99,5 +99,7 @@ Route::get('portal/{token}', [PortalMemberController::class, 'show'])->name('por
 Route::post('portal/invoices/{invoice}/proof', [PortalMemberController::class, 'uploadProof'])
     ->name('portal.invoices.uploadProof');
 
+Route::get('/portal/invoices/{invoice}/download', [PortalMemberController::class, 'downloadInvoice'])
+    ->name('portal.invoices.download');
 
 require __DIR__.'/auth.php';

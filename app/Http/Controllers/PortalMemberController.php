@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PortalMemberController extends Controller
 {
@@ -54,5 +55,17 @@ class PortalMemberController extends Controller
         ]);
 
         return back()->with('success', 'Bukti transfer berhasil diupload. Menunggu verifikasi admin.');
+    }
+
+    public function downloadInvoice(Invoice $invoice, Request $request)
+    {
+        $token = $request->query('token');
+
+        if (!$token || $invoice->member->portal_token !== $token) {
+            abort(403, 'Token tidak valid.');
+        }
+
+        $pdf = Pdf::loadView('portal.pdf', compact('invoice'));
+        return $pdf->download('Invoice-' . $invoice->code . '.pdf');
     }
 }
