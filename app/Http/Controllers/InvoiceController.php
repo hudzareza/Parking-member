@@ -11,24 +11,49 @@ use Illuminate\Http\Request;
 use Midtrans\Snap;
 use Midtrans\Config;
 use Illuminate\Support\Str;
+use App\Exports\InvoiceExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $query = Invoice::with('member.user','branch');
+        $query = Invoice::with('member.user', 'branch');
 
-        // filter berdasarkan role
+        // Filter berdasarkan role
         if (auth()->user()->hasRole('member')) {
             $query->where('member_id', auth()->user()->member->id);
         } elseif (auth()->user()->hasRole('cabang')) {
             $query->where('branch_id', auth()->user()->branch_id);
         }
 
+        // ✅ Filter Cabang
+        if ($request->filled('branch_id')) {
+            $query->where('branch_id', $request->branch_id);
+        }
+
+        // ✅ Filter Bulan & Tahun
+        if ($request->filled('month')) {
+            $query->whereMonth('period', $request->month);
+        }
+        if ($request->filled('year')) {
+            $query->whereYear('period', $request->year);
+        }
+
+        // ✅ Filter Range Tanggal
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('period', [$request->start_date, $request->end_date]);
+        }
+
         $invoices = $query->get();
 
-        return view('invoices.index', compact('invoices'));
+        // daftar cabang untuk dropdown
+        $branches = \App\Models\Branch::all();
+
+        return view('invoices.index', compact('invoices', 'branches'));
     }
+
 
     public function show(Invoice $invoice)
     {
@@ -166,5 +191,34 @@ class InvoiceController extends Controller
 
         // (opsional) jangan hapus file agar audit trail ada, atau hapus jika ingin.
         return back()->with('success', 'Bukti transfer ditolak. Beri tahu member untuk upload ulang.');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $filters = $request->only(['branch_id','month','year','start_date','end_date']);
+        return Excel::download(new InvoiceExport($filters), 'invoices.xlsx');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $query = Invoice::with(['member.user','branch']);
+
+        if ($request->filled('branch_id')) {
+            $query->where('branch_id', $request->branch_id);
+        }
+        if ($request->filled('month')) {
+            $query->whereMonth('period', $request->month);
+        }
+        if ($request->filled('year')) {
+            $query->whereYear('period', $request->year);
+        }
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('period', [$request->start_date, $request->end_date]);
+        }
+
+        $invoices = $query->get();
+
+        $pdf = Pdf::loadView('exports.invoices-pdf', compact('invoices'));
+        return $pdf->download('invoices.pdf');
     }
 }

@@ -6,6 +6,63 @@
         <h1>Daftar Payments</h1>
     </div>
     <div class="card shadow-lg" style="font-size: 1rem;">
+        <div class="card mb-4 p-3 shadow-sm">
+            <form method="GET" action="{{ route('payments.index') }}" class="row g-3 align-items-end">
+                {{-- Filter Cabang --}}
+                @role('super-admin|pusat')
+                <div class="col-md-3">
+                    <label class="form-label">Cabang</label>
+                    <select name="branch_id" class="form-select">
+                        <option value="">-- Semua Cabang --</option>
+                        @foreach($branches as $branch)
+                            <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
+                                {{ $branch->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                @endrole
+
+                {{-- Filter Bulan --}}
+                <div class="col-md-2">
+                    <label class="form-label">Bulan</label>
+                    <select name="month" class="form-select">
+                        <option value="">-- Semua --</option>
+                        @for ($m=1; $m<=12; $m++)
+                            <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                            </option>
+                        @endfor
+                    </select>
+                </div>
+
+                {{-- Filter Tahun --}}
+                <div class="col-md-2">
+                    <label class="form-label">Tahun</label>
+                    <select name="year" class="form-select">
+                        <option value="">-- Semua --</option>
+                        @for ($y = now()->year; $y >= 2020; $y--)
+                            <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                        @endfor
+                    </select>
+                </div>
+
+                {{-- Filter Range Tanggal --}}
+                <div class="col-md-2">
+                    <label class="form-label">Dari</label>
+                    <input type="text" id="start_date" name="start_date" class="form-control" value="{{ request('start_date') }}" placeholder="Pilih tanggal">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Sampai</label>
+                    <input type="text" id="end_date" name="end_date" class="form-control" value="{{ request('end_date') }}" placeholder="Pilih tanggal">
+                </div>
+
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+
         <div class="card-body">
             <table id="users-table" class="table table-bordered datatable">
                 <thead>
@@ -42,7 +99,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="p-3 text-center">
-                        <a href="{{ route('payments.export.pdf') }}" class="btn btn-danger btn-sm">
+                        <a href="{{ route('payments.export.pdf', request()->all()) }}" class="btn btn-danger btn-sm">
                             <i class="bi bi-file-earmark-pdf"></i> Export PDF
                         </a>
                     </div>
@@ -51,7 +108,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="p-3 text-center">
-                        <a href="{{ route('payments.export.excel') }}" class="btn btn-success btn-sm">
+                        <a href="{{ route('payments.export.excel', request()->all()) }}" class="btn btn-success btn-sm">
                             <i class="bi bi-file-earmark-excel"></i> Export Excel
                         </a>
                     </div>

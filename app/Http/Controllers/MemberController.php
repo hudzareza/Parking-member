@@ -13,24 +13,42 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class MemberController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $query = Member::with(['user', 'branch']);
 
-        // Jika user cabang, filter berdasarkan branch_id
+        // Role filter
         if (auth()->user()->hasRole('cabang')) {
             $query->where('branch_id', auth()->user()->branch_id);
         }
-
-        // Jika user member, tampilkan hanya data miliknya
         if (auth()->user()->hasRole('member')) {
             $query->where('user_id', auth()->id());
         }
 
-        $members = $query->get();
+        // Filter percabang
+        if ($request->filled('branch_id')) {
+            $query->where('branch_id', $request->branch_id);
+        }
 
-        return view('members.index', compact('members'));
+        // Filter per bulan & tahun
+        if ($request->filled('month')) {
+            $query->whereMonth('joined_at', $request->month);
+        }
+        if ($request->filled('year')) {
+            $query->whereYear('joined_at', $request->year);
+        }
+
+        // Filter per tanggal (range)
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('joined_at', [$request->start_date, $request->end_date]);
+        }
+
+        $members = $query->get();
+        $branches = \App\Models\Branch::all();
+
+        return view('members.index', compact('members', 'branches'));
     }
+
 
     public function create()
     {
@@ -145,14 +163,31 @@ class MemberController extends Controller
     }
 
 
-    public function exportExcel()
+    public function exportExcel(Request $request)
     {
-        return Excel::download(new MemberExport, 'members.xlsx');
+        $filters = $request->only(['branch_id','month','year','start_date','end_date']);
+        return Excel::download(new MemberExport($filters), 'members.xlsx');
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
-        $members = Member::with(['user','branch','vehicles'])->get();
+        $query = Member::with(['user','branch','vehicles']);
+
+        if ($request->filled('branch_id')) {
+            $query->where('branch_id', $request->branch_id);
+        }
+        if ($request->filled('month')) {
+            $query->whereMonth('joined_at', $request->month);
+        }
+        if ($request->filled('year')) {
+            $query->whereYear('joined_at', $request->year);
+        }
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('joined_at', [$request->start_date, $request->end_date]);
+        }
+
+        $members = $query->get();
+
         $pdf = Pdf::loadView('exports.members-pdf', compact('members'));
         return $pdf->download('members.pdf');
     }
