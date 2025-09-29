@@ -233,17 +233,5 @@ $(document).ready(function() {
     });
 });
 </script>
-<script>
-    // Redirect otomatis jika sudah lebih dari 1 hari sejak member dibuat
-    document.addEventListener("DOMContentLoaded", function() {
-        let createdAt = new Date("{{ $member->created_at }}"); 
-        let now = new Date();
-        let diff = (now - createdAt) / (1000 * 60 * 60 * 24); // selisih dalam hari
-
-        if (diff > 1) {
-            window.location.href = "{{ route('portal.form') }}";
-        }
-    });
-</script>
 </body>
 </html>
