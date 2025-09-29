@@ -146,7 +146,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Lokasi</label>
-                    <select name="branch_id" class="form-select" required>
+                    <select name="branch_id" class="form-select" required autocomplete="off">
                         @foreach($branches as $branch)
                             <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                         @endforeach
@@ -157,7 +157,7 @@
                 <div id="vehicles-wrapper">
                     <div class="vehicle-item border p-3 mb-2">
                         <label>Jenis Kendaraan</label>
-                        <select name="vehicles[0][vehicle_type]" class="form-select" required>
+                        <select name="vehicles[0][vehicle_type]" class="form-select" required autocomplete="off">
                             <option value="motor">Motor</option>
                             <option value="mobil">Mobil</option>
                         </select>
