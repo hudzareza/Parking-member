@@ -36,7 +36,8 @@
     <div class="header">
         <img src="{{ public_path('img/logo-new.png') }}" alt="Lotus Parking Logo">
         <h1>LOTUS Parking</h1>
-        <div class="company">Jl. Tanjung Duren Raya No. 27 A Kel : Tanjung Duren Utara Kec : Grogol Petamburan Jakarta Barat 11470 | Telp: (021) 565 5945 Whatsapp: 0852 8330 3970</div>
+        <div class="company">Jl. Tanjung Duren Raya No. 27 A Kel : Tanjung Duren Utara Kec : Grogol Petamburan Jakarta Barat 11470</div>
+        <div class="company">Telp: (021) 565 5945, Whatsapp: 0852 8330 3970</div>
     </div>
 
     <div class="invoice-title">INVOICE</div>
